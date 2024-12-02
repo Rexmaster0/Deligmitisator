@@ -1,15 +1,20 @@
 import sympy as sym
 
-
-EI, ll, F, a = sym.symbols('EI, l, F, a')
-l = a * ll
+EI, l, F, a = sym.symbols('EI, l, F, a')
 # Массив коэффициентов у EI, l для первого и второго конечного элемента
-args = [2, 2, 1, 1]
-# Массив для ограничений в узлах. 0 - без приколов, 1 - заделка, 2 - шарнир односвязный, 3 - шарнир двусвязный,
-# 4 - паз, 5 - поршень
-ligma = [5, 2, 1]
+args = [2, 2*a, 1, 1*a]
+
+types = {"ничего": 0, "заделка": 1, "шарнир односвязный": 2, "шарнир двусвязный": 3, "паз": 4, "поршень": 5}
+# Массив для типов ограничений
+ligma = [types[i] for i in "поршень, шарнир односвязный, заделка".split(', ')]
 # Массив сил на узлах.
-forces = sym.Matrix([-F, 0, 0, -F * ll, 0, 0])
+forces = sym.Matrix([-F, 0, 0, -F * l, 0, 0])
+
+if str(a) in ''.join(str(args)):
+    flag = True
+    div = (EI / (l * a) ** 3)
+else:
+    div = (EI / l ** 3)
 
 
 # Получает граничные условия из ограничений в узлах
@@ -47,7 +52,8 @@ def Matrix(EI1, l1):
                      6 * EI1 * EI / (l1 * l) ** 2],
                     [-6 * EI1 * EI / (l1 * l) ** 2, 2 * EI1 * EI / (l1 * l), 6 * EI1 * EI / (l1 * l) ** 2,
                      4 * EI1 * EI / (l1 * l)]])
-    return k / (EI / l ** 3)
+
+    return k / div
 
 
 # Подсчет ансамбля
@@ -85,7 +91,7 @@ def Desintegrator(k, chokma, force):
                     k[i, j] = 1
 
 
-print("Перед каждой матрицей впишите коэффициент EI / l^3\n")
+print(f"Перед каждой матрицей впишите коэффициент {div}\n")
 k_1 = Matrix(*args[:2])
 print("Матрица k1")
 Mprint(k_1)
@@ -97,21 +103,25 @@ print("Ансамбль без учета граничных условий")
 ansamble = Revansamble(k_1, k_2)
 Mprint(ansamble)
 
+print("Граничные условия")
 suckma = Deligmitisator(ligma)
-Desintegrator(ansamble, suckma, forces)
 congratulations = ['w1', 'o1', 'w2', 'o2', 'w3', 'o3']
 well_done = ['f11', 'f12', 'f21', 'f22', 'f31', 'f32']
-
-print("Граничные условия")
 for i in range(len(suckma)):
     if suckma[i] == 0:
-        print(f"{congratulations[i]} = {suckma[i]}")
-    if forces[i] != 0:
-        print(f"{well_done[i]} = {forces[i]}")
+        print(f"{congratulations[i]} = {suckma[i]}    {well_done[i]} = ?")
+    else:
+        print(f"{congratulations[i]} = ?    {well_done[i]} = {forces[i]}")
 
 print("\nУльтра Ансамбль")
+Desintegrator(ansamble, suckma, forces)
 Mprint(ansamble)
-u = (ansamble ** -1 * forces / (EI / l ** 3)).col(0)
-print("Вектор u:")
+u = (ansamble ** -1 * forces / div).col(0)
+
+print("Вектор f:")
+for i in range(len(forces)):
+    print(f"{well_done[i]} = {forces[i]}")
+
+print("\nВектор u:")
 for i in range(len(u)):
     print(f"{congratulations[i]} = {u[i]}")
