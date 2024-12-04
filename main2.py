@@ -2,15 +2,16 @@ import sympy as sym
 
 EI, l, F, a = sym.symbols('EI, l, F, a')
 # Массив коэффициентов у EI, l для первого и второго конечного элемента
-args = [2, 2 * a, 1, 1 * a]
+args = [4, a, 4, a]
 
 types = {"ничего": 0, "заделка": 1, "шарнир односвязный": 2, "шарнир двусвязный": 3, "паз": 4, "поршень": 5}
 # Массив для типов ограничений
-ligma = [types[i] for i in "поршень, шарнир односвязный, заделка".split(', ')]
-# Массив сил на узлах. Не известные силы записываются нулем
-forces = sym.Matrix([-F, 0, 0, -F * l, 0, 0])
+ligma = [types[i] for i in "поршень, шарнир односвязный, шарнир двусвязный".split(', ')]
+# Массив сил на узлах.
+forces = sym.Matrix([2*F, 0, 0, 0, 0, 3 * F * l])
 
 if str(a) in ''.join(str(args)):
+    flag = True
     div = (EI / (l * a) ** 3)
 else:
     div = (EI / l ** 3)
@@ -92,44 +93,32 @@ def Desintegrator(k, chokma, force):
 
 print(f"Перед каждой матрицей впишите коэффициент {div}\n")
 k_1 = Matrix(*args[:2])
-print("Матрица [k1]")
+print("Матрица k1")
 Mprint(k_1)
 k_2 = Matrix(*args[2:])
-print("Матрица [k2]")
+print("Матрица k2")
 Mprint(k_2)
 
 print("Ансамбль без учета граничных условий")
 ansamble = Revansamble(k_1, k_2)
 Mprint(ansamble)
-
 print("Граничные условия")
 suckma = Deligmitisator(ligma)
-w1, o1, w2, o2, w3, o3, f11, f12, f21, f22, f31, f32 = sym.symbols('w1, o1, w2, o2, w3, o3, f11, f12, f21, f22, f31, '
-                                                                   'f32')
-congratulations = sym.Matrix([w1, o1, w2, o2, w3, o3])
-well_done = sym.Matrix([f11, f12, f21, f22, f31, f32])
+congratulations = [r'$\omega_{1}$', r'$\theta_{1}$', r'$\omega_{2}$', r'$\theta_{2}$', r'$\omega_{3}$', r'$\theta_{3}$']
+well_done = ['$f_{11}$', '$f_{12}$', '$f_{21}$', '$f_{22}$', '$f_{31}$', '$f_{32}$']
+restrict = ''
 for i in range(len(suckma)):
     if suckma[i] == 0:
         print(f"{congratulations[i]} = {suckma[i]}    {well_done[i]} = ?")
+        restrict += fr"{congratulations[i]} = {suckma[i]} \quad {well_done[i]} = ?\\"
     else:
-        print(f"{congratulations[i]} = ?    {well_done[i]} = {forces[i]}")
-
+        print(f"{congratulations[i]} = ?    {well_done[i]} = {sym.latex(forces[i])}")
+        restrict += fr"{congratulations[i]} = ? \quad {well_done[i]} = {sym.latex(forces[i])} \\"
+ansamblecopy = ansamble.copy()
 print("\nУльтра Ансамбль")
 Desintegrator(ansamble, suckma, forces)
 Mprint(ansamble)
 u = (ansamble ** -1 * forces / div).col(0)
-
-for i in range(6):
-    if forces[i] == 0:
-        continue
-    for j in range(6):
-        if ansamble[i, j] != 0:
-            figma = f"{ansamble[i, j] * congratulations[j]}"
-            if figma[0] != '-':
-                print(f" + {figma}", end='')
-            else:
-                print(f" - {figma[1:]}", end='')
-    print(f" = {forces[i]}")
 
 print("Вектор f:")
 for i in range(len(forces)):
@@ -138,3 +127,44 @@ for i in range(len(forces)):
 print("\nВектор u:")
 for i in range(len(u)):
     print(f"{congratulations[i]} = {u[i]}")
+
+w1, o1, w2, o2, w3, o3 = sym.symbols(r'$\omega_{1}$, $\theta_{1}$, $\omega_{2}$, $\theta_{2}$, $\omega_{3}$, '
+                                     r'$\theta_{3}$')
+linguine = sym.Matrix([w1, o1, w2, o2, w3, o3])
+for i in range(len(suckma)):
+    if suckma[i] == 0:
+        linguine[i] = 0
+
+with open('chokma.tex', 'r', encoding='utf-8') as file:
+    data = file.readlines()
+data[28] = sym.latex(div)
+data[29] = sym.latex(k_1)
+data[32] = sym.latex(div)
+data[33] = sym.latex(k_2)
+data[37] = sym.latex(div) + sym.latex(ansamblecopy)
+data[40] = restrict
+data[44] = sym.latex(div) + sym.latex(ansamblecopy)
+data[64] = sym.latex(div) + sym.latex(ansamble)
+data[65] = sym.latex(linguine, mat_delim='(')
+data[67] = sym.latex(forces, mat_delim='(')
+count = 0
+for i in range(len(forces)):
+    if linguine[i] != 0:
+        data.insert(72 + count, (sym.latex((div * ansamble.row(i) * linguine), mat_delim='') + fr" = {sym.latex(forces[i])} \\ ").replace('$', ''))
+        count += 1
+data[71 + count] = data[71 + count][:-3]
+for i in range(len(u)):
+    if u[i] != 0:
+        data.insert(73 + count, fr"{sym.latex(linguine[i])} = {sym.latex(u[i])} \quad \quad".replace('$', ''))
+        count += 1
+
+data[84 + count] = " = " + sym.latex(u, mat_delim='(')
+file.close()
+with open('ligmanation.tex', 'w', encoding='utf-8') as file:
+    for i in data:
+        if i[-1] == "\n":
+            file.write(i)
+        else:
+            file.write(i + "\n")
+
+print("Введите файл ligmanation.tex на этот сайт или любой другой компилятор tex to pdf \nhttps://ru.overleaf.com/project")
