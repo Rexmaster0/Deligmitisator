@@ -1,0 +1,90 @@
+\documentclass{article}
+\title{}
+\usepackage{amsmath}
+\usepackage{tabularx}
+\begin{document}
+\section{}
+
+${u} = \begin{pmatrix}
+\omega_{1} \\
+\theta_{1} \\
+\omega_{2} \\
+\theta_{2} \\
+\omega_{3} \\
+\theta_{3} \\
+\end{pmatrix}$ \quad \quad
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\# & $\omega_{1}^e$ & $\theta_{1}^e$ & $\omega_{2}^e$ & $\theta_{2}^e$ \\ \hline
+1 & 1  & 2 & 3 & 4  \\ \hline
+2 & 3 & 4 & 5 & 6 \\ \hline
+\end{tabular}
+\section{}
+\([k_{e}^1] =
+\frac{EI}{l^{3}}
+\left[\begin{matrix}48 & - 24 l & -48 & - 24 l\\- 24 l & 16 l^{2} & 24 l & 8 l^{2}\\-48 & 24 l & 48 & 24 l\\- 24 l & 8 l^{2} & 24 l & 16 l^{2}\end{matrix}\right]
+\) \quad
+\([k_{e}^2] =
+\frac{EI}{l^{3}}
+\left[\begin{matrix}48 & - 24 l & -48 & - 24 l\\- 24 l & 16 l^{2} & 24 l & 8 l^{2}\\-48 & 24 l & 48 & 24 l\\- 24 l & 8 l^{2} & 24 l & 16 l^{2}\end{matrix}\right]
+\)
+\section{}
+$
+\frac{EI}{l^{3}}\left[\begin{matrix}48 & - 24 l & -48 & - 24 l & 0 & 0\\- 24 l & 16 l^{2} & 24 l & 8 l^{2} & 0 & 0\\-48 & 24 l & 96 & 0 & -48 & - 24 l\\- 24 l & 8 l^{2} & 0 & 32 l^{2} & 24 l & 8 l^{2}\\0 & 0 & -48 & 24 l & 48 & 24 l\\0 & 0 & - 24 l & 8 l^{2} & 24 l & 16 l^{2}\end{matrix}\right]
+$
+\section{}
+$\omega_{1}$ = ? \quad $f_{11}$ = 2 F \\$\theta_{1}$ = 0 \quad $f_{12}$ = ?\\$\omega_{2}$ = 0 \quad $f_{21}$ = ?\\$\theta_{2}$ = ? \quad $f_{22}$ = 0 \\$\omega_{3}$ = 0 \quad $f_{31}$ = ?\\$\theta_{3}$ = ? \quad $f_{32}$ = 3 F l \\
+\section{}
+
+\(
+\frac{EI}{l^{3}}\left[\begin{matrix}48 & - 24 l & -48 & - 24 l & 0 & 0\\- 24 l & 16 l^{2} & 24 l & 8 l^{2} & 0 & 0\\-48 & 24 l & 96 & 0 & -48 & - 24 l\\- 24 l & 8 l^{2} & 0 & 32 l^{2} & 24 l & 8 l^{2}\\0 & 0 & -48 & 24 l & 48 & 24 l\\0 & 0 & - 24 l & 8 l^{2} & 24 l & 16 l^{2}\end{matrix}\right]
+\begin{pmatrix}
+\omega_{1} \\
+\theta_{1} \\
+\omega_{2} \\
+\theta_{2} \\
+\omega_{3} \\
+\theta_{3} \\
+\end{pmatrix} =
+\begin{pmatrix}
+f_{11} \\
+f_{12} \\
+f_{21} \\
+f_{22} \\
+f_{31} \\
+f_{32} \\
+\end{pmatrix}
+\)
+\\ \\ \\ \\
+\(
+\frac{EI}{l^{3}}\left[\begin{matrix}48 & 0 & 0 & - 24 l & 0 & 0\\0 & 1 & 0 & 0 & 0 & 0\\0 & 0 & 1 & 0 & 0 & 0\\- 24 l & 0 & 0 & 32 l^{2} & 0 & 8 l^{2}\\0 & 0 & 0 & 0 & 1 & 0\\0 & 0 & 0 & 8 l^{2} & 0 & 16 l^{2}\end{matrix}\right]
+\left(\begin{matrix}\omega_{1}\\0\\0\\\theta_{2}\\0\\\theta_{3}\end{matrix}\right)
+ =
+\left(\begin{matrix}2 F\\0\\0\\0\\0\\3 F l\end{matrix}\right)
+\)
+\section{}
+%
+
+\( \begin{cases}
+\begin{matrix}\frac{48 \omega_{1} EI}{l^{3}} - \frac{24 \theta_{2} EI}{l^{2}}\end{matrix} = 2 F \\ 
+\begin{matrix}- \frac{24 \omega_{1} EI}{l^{2}} + \frac{32 \theta_{2} EI}{l} + \frac{8 \theta_{3} EI}{l}\end{matrix} = 0 \\ 
+\begin{matrix}\frac{8 \theta_{2} EI}{l} + \frac{16 \theta_{3} EI}{l}\end{matrix} = 3 F l \\ 
+    \end{cases}
+   \\ \\ \\
+\omega_{1} = \frac{5 F l^{3}}{192 EI} \quad \quad
+\theta_{2} = - \frac{F l^{2}}{32 EI} \quad \quad
+\theta_{3} = \frac{13 F l^{2}}{64 EI} \quad \quad
+\)
+\section{}
+$ {u} = \begin{pmatrix}
+\omega_{1} \\
+\theta_{1} \\
+\omega_{2} \\
+\theta_{2} \\
+\omega_{3} \\
+\theta_{3} \\
+\end{pmatrix} $
+\(
+ = \left(\begin{matrix}\frac{5 F l^{3}}{192 EI}\\0\\0\\- \frac{F l^{2}}{32 EI}\\0\\\frac{13 F l^{2}}{64 EI}\end{matrix}\right)
+\)
+\end{document}
