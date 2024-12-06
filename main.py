@@ -11,7 +11,7 @@ args = [2, 2 * a, 1, a]
 # Массив для типов ограничений. Введите названия в строку
 limits = "поршень, шарнир односвязный, заделка"
 # Массив сил на узлах. Неизвестные силы заносите как нулевые
-forces = sym.Matrix([-F, 0, 0, -F*l, 0, 0])
+forces = [-F, 0, 0, -F*l, 0, 0]
 
 if str(a) in ''.join(str(args)):
     flag = True
@@ -107,6 +107,7 @@ ansamble = Revansamble(k_1, k_2)
 Mprint(ansamble)
 print("Граничные условия")
 ligma = [types[i] for i in limits.split(', ')]
+forces = sym.Matrix(forces)
 suckma = Deligmitisator(ligma)
 congratulations = [r'$\omega_{1}$', r'$\theta_{1}$', r'$\omega_{2}$', r'$\theta_{2}$', r'$\omega_{3}$', r'$\theta_{3}$']
 well_done = ['$f_{11}$', '$f_{12}$', '$f_{21}$', '$f_{22}$', '$f_{31}$', '$f_{32}$']
