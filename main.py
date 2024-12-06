@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sympy as sym
 import shutil
 
@@ -6,11 +7,11 @@ EI, l, F, a = sym.symbols('EI, l, F, a')
 types = {"ничего": 0, "заделка": 1, "шарнир односвязный": 2, "шарнир двусвязный": 3, "паз": 4, "поршень": 5}
 
 # Массив коэффициентов у EI, l для первого и второго конечного элемента
-args = [4, a, 4, a]
+args = [2, 2 * a, 1, a]
 # Массив для типов ограничений. Введите названия в строку
-ligma = [types[i] for i in "поршень, шарнир односвязный, шарнир двусвязный".split(', ')]
+ligma = [types[i] for i in "поршень, шарнир односвязный, заделка".split(', ')]
 # Массив сил на узлах. Неизвестные силы заносите как нулевые
-forces = sym.Matrix([2*F, 0, 0, 0, 0, 3 * F * l])
+forces = sym.Matrix([-F, 0, 0, -F*l, 0, 0])
 
 if str(a) in ''.join(str(args)):
     flag = True
@@ -152,7 +153,8 @@ data[62] = sym.latex(forces, mat_delim='(')
 count = 0
 for i in range(len(forces)):
     if linguine[i] != 0:
-        data.insert(68 + count, (sym.latex((div * ansamble.row(i) * linguine), mat_delim='') + fr" = {sym.latex(forces[i])} \\ ").replace('$', ''))
+        data.insert(68 + count, (sym.latex((div * ansamble.row(i) * linguine), mat_delim='') +
+                                 fr" = {sym.latex(forces[i])} \\ ").replace('$', ''))
         count += 1
 data[68 + count] = data[68 + count][:-3]
 for i in range(len(u)):
@@ -163,13 +165,16 @@ for i in range(len(u)):
 data[81 + count] = " = " + sym.latex(u, mat_delim='(')
 file.close()
 path = os.getcwd()
-with open(rf'{path}\texlive_minimal\rk2.tex', 'w', encoding='utf-8') as file:
+with open('rk2.tex', 'w', encoding='utf-8') as file:
     for i in data:
         if i[-1] == "\n":
             file.write(i)
         else:
             file.write(i + "\n")
 
+print("\nЕсли у вас не Windows, то для переноса rk2.tex в pdf вам надо закинуть его на этот сайт:"
+      "\nhttps://products.groupdocs.app/conversion/tex-to-pdf")
 os.chdir(fr"{path}\texlive_minimal")
-os.system(r"pdflatex.exe -interaction=nonstopmode rk2.tex")
+subprocess.run(['pdflatex.exe', '-interaction=nonstopmode', fr'{path}\rk2.tex'], stdout=subprocess.DEVNULL,
+               stderr=subprocess.DEVNULL)
 shutil.move("rk2.pdf", rf"{path}\rk2.pdf")
